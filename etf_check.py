@@ -15,10 +15,18 @@ def send_telegram(msg):
     requests.post(url, data=payload)
 
 def download_csv():
-    r = requests.get(ETF_CSV_URL)
+    headers = {
+        "User-Agent": (
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+            "AppleWebKit/537.36 (KHTML, like Gecko) "
+            "Chrome/115.0.0.0 Safari/537.36"
+        )
+    }
+    r = requests.get(ETF_CSV_URL, headers=headers)
     r.raise_for_status()
     with open("new.csv", "wb") as f:
         f.write(r.content)
+    send_telegram("✅ New ETF holdings file downloaded.")
 
 def compare_and_notify():
     if not os.path.exists(LOCAL_FILE):
